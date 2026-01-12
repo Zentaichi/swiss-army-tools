@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+@theme {
+  /* Minimalistic color palette - subtle and sleek */
+  --color-primary-50: #f8f9fa;
+  --color-primary-100: #e9ecef;
+  --color-primary-200: #dee2e6;
+  --color-primary-300: #adb5bd;
+  --color-primary-400: #6c757d;
+  --color-primary-500: #495057;
+  --color-primary-600: #343a40;
+  --color-primary-700: #212529;
+  --color-primary-800: #16191c;
+  --color-primary-900: #0d0f11;
+  
+  /* Accent color for subtle highlights */
+  --color-accent-400: #667eea;
+  --color-accent-500: #5568d3;
+  --color-accent-600: #4c51bf;
+  --color-accent-700: #434190;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* Minimalistic tool card with subtle elevation */
+  .tool-card {
+    @apply bg-white rounded-2xl p-8 cursor-pointer border border-gray-100 transition-all duration-300;
+    @apply hover:border-gray-200 hover:-translate-y-0.5;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  }
+  
+  .tool-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+  
+  /* Clean container for tools */
+  .tool-container {
+    @apply bg-white rounded-2xl p-8 border border-gray-100;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  }
+  
+  /* Sleek input fields */
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-200 rounded-xl;
+    @apply focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900;
+    @apply transition-all duration-200 bg-gray-50/50;
+  }
+  
+  /* Modern primary button */
+  .btn-primary {
+    @apply px-6 py-3 bg-gray-900 text-white rounded-xl;
+    @apply hover:bg-gray-800 active:bg-gray-950;
+    @apply transition-all duration-200 font-medium;
+    @apply hover:shadow-lg hover:shadow-gray-900/10;
+  }
+  
+  /* Subtle secondary button */
+  .btn-secondary {
+    @apply px-6 py-3 bg-gray-100 text-gray-700 rounded-xl;
+    @apply hover:bg-gray-200 active:bg-gray-300;
+    @apply transition-all duration-200 font-medium;
+  }
+  
+  /* Accent button for special actions */
+  .btn-accent {
+    @apply px-6 py-3 bg-accent-500 text-white rounded-xl;
+    @apply hover:bg-accent-600 active:bg-accent-700;
+    @apply transition-all duration-200 font-medium;
+    @apply hover:shadow-lg hover:shadow-accent-500/20;
+  }
+}
+
+/* Smooth transitions for route changes */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* Refined animations */
+@keyframes fadeIn {
+  0% { 
+    opacity: 0; 
+    transform: translateY(10px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  0% { 
+    transform: translateY(20px); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Stagger animation for cards */
+.stagger-item {
+  opacity: 0;
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0.05s; }
+.stagger-item:nth-child(2) { animation-delay: 0.1s; }
+.stagger-item:nth-child(3) { animation-delay: 0.15s; }
+.stagger-item:nth-child(4) { animation-delay: 0.2s; }
+.stagger-item:nth-child(5) { animation-delay: 0.25s; }
+.stagger-item:nth-child(6) { animation-delay: 0.3s; }
+.stagger-item:nth-child(7) { animation-delay: 0.35s; }
+.stagger-item:nth-child(8) { animation-delay: 0.4s; }
+.stagger-item:nth-child(9) { animation-delay: 0.45s; }
+.stagger-item:nth-child(10) { animation-delay: 0.5s; }
+.stagger-item:nth-child(11) { animation-delay: 0.55s; }
+.stagger-item:nth-child(12) { animation-delay: 0.6s; }
