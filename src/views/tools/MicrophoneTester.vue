@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import ToolHeader from '@/components/ToolHeader.vue'
+import ToolCard from '@/components/ToolCard.vue'
+import ToolIcon from '@/components/ToolIcon.vue'
 
 const isSupported = ref(true)
 const hasPermission = ref(false)
@@ -145,129 +147,138 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white">
+  <div class="min-h-screen bg-gray-50">
     <ToolHeader 
       title="Microphone Tester"
       description="Test and visualize microphone input" 
     />
 
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Not Supported Warning -->
-      <div v-if="!isSupported" class="tool-container animate-fade-in">
-        <div class="text-center py-12">
-          <div class="text-6xl mb-4">🚫</div>
-          <h3 class="text-xl font-semibold text-gray-900 mb-2">Not Supported</h3>
-          <p class="text-gray-600">{{ error }}</p>
+      <ToolCard v-if="!isSupported" title="Not Supported" :collapsible="false">
+        <div class="text-center py-8">
+          <svg class="w-20 h-20 mx-auto mb-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+          </svg>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Browser Not Supported</h3>
+          <p class="text-gray-600 text-sm">{{ error }}</p>
         </div>
-      </div>
+      </ToolCard>
 
       <!-- Main Interface -->
-      <div v-else class="space-y-8">
+      <div v-else class="space-y-6">
         <!-- Device Selection -->
-        <div class="tool-container animate-fade-in">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">Microphone Device</h2>
+        <ToolCard title="Microphone Device" :collapsible="false">
           <select
             v-model="selectedDevice"
             @change="changeDevice"
             :disabled="isRecording"
-            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all duration-200 bg-gray-50/50 disabled:opacity-50"
+            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-100 transition-all bg-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <option value="">Default Device</option>
             <option v-for="device in devices" :key="device.deviceId" :value="device.deviceId">
               {{ device.label || `Microphone ${device.deviceId.substring(0, 8)}` }}
             </option>
           </select>
-        </div>
+        </ToolCard>
 
         <!-- Error Message -->
-        <div v-if="error" class="tool-container animate-fade-in bg-red-50 border-red-200">
-          <div class="flex items-center gap-3 text-red-700">
-            <span class="text-2xl">⚠️</span>
-            <p class="text-sm">{{ error }}</p>
+        <ToolCard v-if="error" title="Error" :collapsible="false">
+          <div class="flex items-center gap-3 text-red-700 bg-red-50 p-4 rounded-lg border border-red-100">
+            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <p class="text-sm font-medium">{{ error }}</p>
           </div>
-        </div>
+        </ToolCard>
 
         <!-- Permission Request -->
-        <div v-if="!hasPermission" class="tool-container animate-fade-in text-center py-12">
-          <div class="text-6xl mb-4">🎤</div>
-          <h3 class="text-xl font-semibold text-gray-900 mb-4">Microphone Access Required</h3>
-          <p class="text-gray-600 mb-6">Click the button below to allow microphone access</p>
-          <button
-            @click="requestPermission"
-            class="px-6 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-200 font-medium"
-          >
-            Grant Access
-          </button>
-        </div>
+        <ToolCard v-if="!hasPermission" title="Microphone Access Required" :collapsible="false">
+          <div class="text-center py-8">
+            <svg class="w-20 h-20 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Grant Microphone Access</h3>
+            <p class="text-gray-600 mb-6 text-sm">Click the button below to allow microphone access</p>
+            <button
+              @click="requestPermission"
+              class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all font-medium"
+            >
+              Grant Access
+            </button>
+          </div>
+        </ToolCard>
 
         <!-- Audio Visualizer -->
-        <div v-if="hasPermission" class="space-y-8">
+        <div v-if="hasPermission" class="space-y-6">
           <!-- Level Meter -->
-          <div class="tool-container stagger-item">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-xl font-semibold text-gray-900">Audio Level</h2>
-              <div class="flex gap-2">
-                <button
-                  v-if="isRecording"
-                  @click="stop"
-                  class="px-4 py-2 bg-red-500 text-white text-sm rounded-xl hover:bg-red-600 transition-all duration-200 font-medium"
-                >
-                  Stop
-                </button>
-                <button
-                  v-else
-                  @click="requestPermission"
-                  class="px-4 py-2 bg-gray-900 text-white text-sm rounded-xl hover:bg-gray-800 transition-all duration-200 font-medium"
-                >
-                  Start
-                </button>
+          <ToolCard title="Audio Level" :collapsible="false">
+            <template v-slot:title>
+              <div class="flex items-center justify-between w-full">
+                <h3 class="text-base font-semibold text-gray-900">Audio Level</h3>
+                <div class="flex gap-2">
+                  <button
+                    v-if="isRecording"
+                    @click="stop"
+                    class="px-4 py-2 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition-all font-medium"
+                  >
+                    Stop
+                  </button>
+                  <button
+                    v-else
+                    @click="requestPermission"
+                    class="px-4 py-2 bg-gray-900 text-white text-xs rounded-lg hover:bg-gray-800 transition-all font-medium"
+                  >
+                    Start
+                  </button>
+                </div>
               </div>
-            </div>
+            </template>
 
             <!-- Circular Level Indicator -->
-            <div class="flex items-center justify-center py-12">
-              <div class="relative w-64 h-64">
+            <div class="flex items-center justify-center py-8">
+              <div class="relative w-56 h-56">
                 <!-- Background circle -->
-                <svg class="w-64 h-64 transform -rotate-90">
+                <svg class="w-56 h-56 transform -rotate-90">
                   <circle
-                    cx="128"
-                    cy="128"
-                    r="110"
+                    cx="112"
+                    cy="112"
+                    r="96"
                     stroke="currentColor"
-                    stroke-width="20"
+                    stroke-width="16"
                     fill="none"
-                    class="text-gray-200"
+                    class="text-gray-100"
                   />
                   <!-- Level circle -->
                   <circle
-                    cx="128"
-                    cy="128"
-                    r="110"
+                    cx="112"
+                    cy="112"
+                    r="96"
                     stroke="currentColor"
-                    :stroke-width="20"
+                    :stroke-width="16"
                     fill="none"
                     :class="[
                       audioLevel > 80 ? 'text-red-500' :
                       audioLevel > 60 ? 'text-yellow-500' :
                       'text-green-500'
                     ]"
-                    :stroke-dasharray="691.15"
-                    :stroke-dashoffset="691.15 - (691.15 * audioLevel / 100)"
+                    :stroke-dasharray="603.19"
+                    :stroke-dashoffset="603.19 - (603.19 * audioLevel / 100)"
                     class="transition-all duration-100"
                   />
                 </svg>
                 
                 <!-- Center text -->
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <div class="text-5xl font-bold text-gray-900">{{ Math.round(audioLevel) }}</div>
-                  <div class="text-sm text-gray-500 uppercase tracking-wider mt-2">dB Level</div>
+                  <div class="text-4xl font-bold text-gray-900">{{ Math.round(audioLevel) }}</div>
+                  <div class="text-xs text-gray-500 uppercase tracking-wider mt-1 font-medium">dB Level</div>
                 </div>
               </div>
             </div>
 
             <!-- Bar Visualization -->
-            <div class="mt-8">
-              <div class="h-12 bg-gray-100 rounded-xl overflow-hidden relative">
+            <div class="mt-6">
+              <div class="h-10 bg-gray-100 rounded-lg overflow-hidden relative">
                 <div
                   class="h-full transition-all duration-100"
                   :style="{ width: audioLevel + '%' }"
@@ -285,57 +296,65 @@ onUnmounted(() => {
                 </div>
               </div>
               
-              <div class="flex justify-between text-xs text-gray-500 mt-2">
+              <div class="flex justify-between text-xs text-gray-500 mt-2 font-medium">
                 <span>Quiet</span>
                 <span>Normal</span>
                 <span>Loud</span>
                 <span>Too Loud</span>
               </div>
             </div>
-          </div>
+          </ToolCard>
 
           <!-- Statistics -->
-          <div class="tool-container stagger-item" style="animation-delay: 0.05s">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-xl font-semibold text-gray-900">Statistics</h2>
-              <button
-                @click="resetPeak"
-                class="text-sm text-gray-500 hover:text-gray-900 transition-colors"
-              >
-                Reset Peak
-              </button>
-            </div>
+          <ToolCard title="Statistics" :collapsible="false">
+            <template v-slot:title>
+              <div class="flex items-center justify-between w-full">
+                <h3 class="text-base font-semibold text-gray-900">Statistics</h3>
+                <button
+                  @click="resetPeak"
+                  class="text-xs text-gray-500 hover:text-gray-900 transition-colors font-medium"
+                >
+                  Reset Peak
+                </button>
+              </div>
+            </template>
 
             <div class="grid grid-cols-2 gap-4">
-              <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
                 <div class="text-2xl font-bold text-gray-900">{{ Math.round(audioLevel) }} dB</div>
-                <div class="text-xs text-gray-500 mt-1 uppercase tracking-wider">Current Level</div>
+                <div class="text-xs text-gray-500 mt-1 uppercase tracking-wider font-medium">Current Level</div>
               </div>
-              <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
                 <div class="text-2xl font-bold text-gray-900">{{ Math.round(peakLevel) }} dB</div>
-                <div class="text-xs text-gray-500 mt-1 uppercase tracking-wider">Peak Level</div>
+                <div class="text-xs text-gray-500 mt-1 uppercase tracking-wider font-medium">Peak Level</div>
               </div>
             </div>
-          </div>
+          </ToolCard>
 
           <!-- Instructions -->
-          <div class="tool-container stagger-item" style="animation-delay: 0.1s">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Instructions</h3>
+          <ToolCard title="Instructions" :default-collapsed="true">
             <div class="space-y-3 text-sm text-gray-600">
               <div class="flex items-start gap-3">
-                <span class="text-lg">🎤</span>
-                <p><strong>Test your microphone:</strong> Speak into your microphone and watch the level indicator respond to your voice.</p>
+                <svg class="w-5 h-5 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+                <p><strong class="text-gray-900">Test your microphone:</strong> Speak into your microphone and watch the level indicator respond to your voice.</p>
               </div>
               <div class="flex items-start gap-3">
-                <span class="text-lg">📊</span>
-                <p><strong>Monitor levels:</strong> The green zone is good, yellow is getting loud, and red indicates the audio is too loud.</p>
+                <svg class="w-5 h-5 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <p><strong class="text-gray-900">Monitor levels:</strong> The green zone is good, yellow is getting loud, and red indicates the audio is too loud.</p>
               </div>
               <div class="flex items-start gap-3">
-                <span class="text-lg">🔧</span>
-                <p><strong>Adjust settings:</strong> If levels are too low or high, adjust your system microphone settings.</p>
+                <svg class="w-5 h-5 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <p><strong class="text-gray-900">Adjust settings:</strong> If levels are too low or high, adjust your system microphone settings.</p>
               </div>
             </div>
-          </div>
+          </ToolCard>
         </div>
       </div>
     </main>

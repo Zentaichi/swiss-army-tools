@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import ToolHeader from '@/components/ToolHeader.vue'
+import ToolCard from '@/components/ToolCard.vue'
+import ToolIcon from '@/components/ToolIcon.vue'
 
 const pressedKeys = ref(new Set())
 const keyHistory = ref([])
@@ -199,19 +201,18 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white">
+  <div class="min-h-screen bg-gray-50">
     <ToolHeader 
       title="Keyboard Tester" 
       description="Press any key to test your keyboard" 
     />
 
-    <main class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+    <main class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <!-- Keyboard Visualization -->
         <div class="xl:col-span-2 space-y-6">
           <!-- Main Keyboard -->
-          <div class="tool-container animate-fade-in">
-            <h2 class="text-xl font-semibold text-gray-900 mb-6">Keyboard</h2>
+          <ToolCard title="Keyboard" :collapsible="false">
             <div class="space-y-2">
               <div v-for="(row, idx) in keyboardLayout" :key="idx" class="flex gap-2">
                 <button
@@ -219,10 +220,10 @@ onUnmounted(() => {
                   :key="keyObj.key"
                   :class="[
                     keyObj.width,
-                    'h-12 rounded-lg border-2 transition-all duration-100 text-xs font-medium flex items-center justify-center',
+                    'h-12 rounded-lg border-2 transition-all duration-100 text-xs font-semibold flex items-center justify-center',
                     isKeyPressed(keyObj.key)
                       ? 'bg-gray-900 border-gray-900 text-white scale-95 shadow-lg shadow-gray-900/20'
-                      : 'bg-gray-50/50 border-gray-200 text-gray-700 hover:border-gray-300'
+                      : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
                   ]"
                   tabindex="-1"
                 >
@@ -230,42 +231,40 @@ onUnmounted(() => {
                 </button>
               </div>
             </div>
-          </div>
+          </ToolCard>
 
           <!-- Arrow and Special Keys -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Special Keys -->
-            <div class="tool-container stagger-item">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4">Special Keys</h3>
+            <ToolCard title="Special Keys">
               <div class="grid grid-cols-3 gap-2">
                 <button
                   v-for="keyObj in specialKeys"
                   :key="keyObj.key"
                   :class="[
                     keyObj.width,
-                    'h-12 rounded-lg border-2 transition-all duration-100 text-xs font-medium',
+                    'h-12 rounded-lg border-2 transition-all duration-100 text-xs font-semibold',
                     isKeyPressed(keyObj.key)
                       ? 'bg-gray-900 border-gray-900 text-white scale-95 shadow-lg shadow-gray-900/20'
-                      : 'bg-gray-50/50 border-gray-200 text-gray-700 hover:border-gray-300'
+                      : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
                   ]"
                   tabindex="-1"
                 >
                   {{ keyObj.label }}
                 </button>
               </div>
-            </div>
+            </ToolCard>
 
             <!-- Arrow Keys -->
-            <div class="tool-container stagger-item" style="animation-delay: 0.05s">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4">Arrow Keys</h3>
+            <ToolCard title="Arrow Keys">
               <div class="flex flex-col items-center gap-2">
                 <!-- Up arrow -->
                 <button
                   :class="[
-                    'w-12 h-12 rounded-lg border-2 transition-all duration-100 text-lg font-medium',
+                    'w-12 h-12 rounded-lg border-2 transition-all duration-100 text-lg font-semibold',
                     isKeyPressed('ArrowUp')
                       ? 'bg-gray-900 border-gray-900 text-white scale-95 shadow-lg shadow-gray-900/20'
-                      : 'bg-gray-50/50 border-gray-200 text-gray-700 hover:border-gray-300'
+                      : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
                   ]"
                   tabindex="-1"
                 >
@@ -275,10 +274,10 @@ onUnmounted(() => {
                 <div class="flex gap-2">
                   <button
                     :class="[
-                      'w-12 h-12 rounded-lg border-2 transition-all duration-100 text-lg font-medium',
+                      'w-12 h-12 rounded-lg border-2 transition-all duration-100 text-lg font-semibold',
                       isKeyPressed('ArrowLeft')
                         ? 'bg-gray-900 border-gray-900 text-white scale-95 shadow-lg shadow-gray-900/20'
-                        : 'bg-gray-50/50 border-gray-200 text-gray-700 hover:border-gray-300'
+                        : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
                     ]"
                     tabindex="-1"
                   >
@@ -286,10 +285,10 @@ onUnmounted(() => {
                   </button>
                   <button
                     :class="[
-                      'w-12 h-12 rounded-lg border-2 transition-all duration-100 text-lg font-medium',
+                      'w-12 h-12 rounded-lg border-2 transition-all duration-100 text-lg font-semibold',
                       isKeyPressed('ArrowDown')
                         ? 'bg-gray-900 border-gray-900 text-white scale-95 shadow-lg shadow-gray-900/20'
-                        : 'bg-gray-50/50 border-gray-200 text-gray-700 hover:border-gray-300'
+                        : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
                     ]"
                     tabindex="-1"
                   >
@@ -297,10 +296,10 @@ onUnmounted(() => {
                   </button>
                   <button
                     :class="[
-                      'w-12 h-12 rounded-lg border-2 transition-all duration-100 text-lg font-medium',
+                      'w-12 h-12 rounded-lg border-2 transition-all duration-100 text-lg font-semibold',
                       isKeyPressed('ArrowRight')
                         ? 'bg-gray-900 border-gray-900 text-white scale-95 shadow-lg shadow-gray-900/20'
-                        : 'bg-gray-50/50 border-gray-200 text-gray-700 hover:border-gray-300'
+                        : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
                     ]"
                     tabindex="-1"
                   >
@@ -308,40 +307,77 @@ onUnmounted(() => {
                   </button>
                 </div>
               </div>
-            </div>
+            </ToolCard>
           </div>
+
+          <!-- Instructions -->
+          <ToolCard title="Instructions" :default-collapsed="true">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600">
+              <div>
+                <div class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Test Keys
+                </div>
+                <p>Click anywhere on the page and start pressing keys. They will light up on the keyboard diagram.</p>
+              </div>
+              <div>
+                <div class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  View History
+                </div>
+                <p>All key presses are logged in the history panel with timestamps and key codes.</p>
+              </div>
+              <div>
+                <div class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Multiple Keys
+                </div>
+                <p>You can press multiple keys simultaneously to test key combinations.</p>
+              </div>
+            </div>
+          </ToolCard>
         </div>
 
         <!-- Key History -->
         <div class="xl:col-span-1">
-          <div class="tool-container animate-fade-in sticky top-8" style="animation-delay: 0.1s">
-            <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-semibold text-gray-900">Key History</h2>
-              <button
-                v-if="keyHistory.length > 0"
-                @click="clearHistory"
-                class="text-sm text-gray-500 hover:text-gray-900 transition-colors duration-200"
-              >
-                Clear
-              </button>
-            </div>
+          <ToolCard title="Key History" :collapsible="false">
+            <template v-slot:title>
+              <div class="flex items-center justify-between w-full">
+                <h3 class="text-base font-semibold text-gray-900">Key History</h3>
+                <button
+                  v-if="keyHistory.length > 0"
+                  @click="clearHistory"
+                  class="text-xs text-gray-500 hover:text-gray-900 transition-colors font-medium"
+                >
+                  Clear
+                </button>
+              </div>
+            </template>
 
             <div v-if="keyHistory.length === 0" class="text-center py-12">
-              <div class="text-5xl mb-4">⌨️</div>
-              <p class="text-gray-500 text-sm">Press any key to start</p>
+              <svg class="w-16 h-16 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+              <p class="text-gray-400 text-sm font-medium">Press any key to start</p>
             </div>
 
             <div v-else class="space-y-2 max-h-[600px] overflow-y-auto">
               <div
                 v-for="item in keyHistory"
                 :key="item.id"
-                class="bg-gray-50 p-3 rounded-xl border border-gray-200 animate-fade-in"
+                class="bg-gray-50 p-3 rounded-lg border border-gray-100"
               >
                 <div class="flex items-center justify-between">
                   <div class="font-mono text-sm font-semibold text-gray-900">
                     {{ item.key }}
                   </div>
-                  <div class="text-xs text-gray-500">
+                  <div class="text-xs text-gray-500 font-medium">
                     {{ item.timestamp }}
                   </div>
                 </div>
@@ -350,26 +386,7 @@ onUnmounted(() => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Instructions -->
-      <div class="tool-container mt-8 stagger-item" style="animation-delay: 0.15s">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Instructions</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600">
-          <div>
-            <div class="font-semibold text-gray-900 mb-2">🎯 Test Keys</div>
-            <p>Click anywhere on the page and start pressing keys. They will light up on the keyboard diagram.</p>
-          </div>
-          <div>
-            <div class="font-semibold text-gray-900 mb-2">📋 View History</div>
-            <p>All key presses are logged in the history panel with timestamps and key codes.</p>
-          </div>
-          <div>
-            <div class="font-semibold text-gray-900 mb-2">🔄 Multiple Keys</div>
-            <p>You can press multiple keys simultaneously to test key combinations.</p>
-          </div>
+          </ToolCard>
         </div>
       </div>
     </main>

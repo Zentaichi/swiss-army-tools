@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import ToolHeader from '@/components/ToolHeader.vue'
+import ToolCard from '@/components/ToolCard.vue'
+import ToolIcon from '@/components/ToolIcon.vue'
 
 const jsonInput = ref('')
 const indentSize = ref(2)
@@ -139,169 +141,173 @@ const loadSample = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white">
+  <div class="min-h-screen bg-gray-50">
     <ToolHeader 
       title="JSON Formatter" 
-      description="Format and validate JSON data" 
+      description="Format, validate, and minify JSON data" 
     />
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Input Section -->
-        <div class="space-y-6">
-          <div class="tool-container animate-fade-in">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-xl font-semibold text-gray-900">Input JSON</h2>
-              <div class="flex items-center gap-2">
-                <button
-                  v-if="jsonInput"
-                  @click="clear"
-                  class="text-sm text-gray-500 hover:text-gray-900 transition-colors"
-                >
-                  Clear
-                </button>
-                <button
-                  @click="loadSample"
-                  class="text-sm text-gray-500 hover:text-gray-900 transition-colors"
-                >
-                  Load Sample
-                </button>
-              </div>
-            </div>
-
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Main Content (Left) -->
+        <div class="xl:col-span-2 space-y-6">
+          <!-- Input JSON -->
+          <ToolCard title="Input JSON" :collapsible="false" full-width>
             <textarea
               v-model="jsonInput"
               placeholder='{"key": "value"}'
-              class="w-full h-96 px-4 py-3 border border-gray-200 rounded-xl resize-none focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all duration-200 bg-gray-50/50 font-mono text-sm"
+              class="w-full h-80 px-4 py-3 border border-gray-200 rounded-lg resize-y focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-100 transition-all bg-white font-mono text-sm"
               :class="{
-                'border-red-300 focus:border-red-500 focus:ring-red-500': isValid === false,
-                'border-green-300 focus:border-green-500 focus:ring-green-500': isValid === true
+                'border-red-300 focus:border-red-400 focus:ring-red-100': isValid === false,
+                'border-green-300 focus:border-green-400 focus:ring-green-100': isValid === true
               }"
             ></textarea>
 
             <!-- Validation Status -->
-            <div v-if="jsonInput" class="mt-3 flex items-center gap-2">
-              <span v-if="isValid === true" class="text-sm text-green-600 flex items-center gap-1">
-                <span class="text-lg">✓</span> Valid JSON
-              </span>
-              <span v-else-if="isValid === false" class="text-sm text-red-600 flex items-center gap-1">
-                <span class="text-lg">✗</span> Invalid JSON
-              </span>
+            <div v-if="jsonInput" class="mt-4 flex items-center justify-between">
+              <div>
+                <span v-if="isValid === true" class="text-sm text-green-600 font-medium flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  Valid JSON
+                </span>
+                <span v-else-if="isValid === false" class="text-sm text-red-600 font-medium flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                  </svg>
+                  Invalid JSON
+                </span>
+              </div>
+              <button
+                @click="clear"
+                class="text-sm text-gray-400 hover:text-gray-600 transition-colors font-medium"
+              >
+                Clear
+              </button>
             </div>
-          </div>
+          </ToolCard>
 
-          <!-- Options & Actions -->
-          <div class="tool-container stagger-item">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Options</h3>
-            
+          <!-- Output JSON -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Formatted Output -->
+            <ToolCard title="Formatted Output" :default-collapsed="false">
+              <!-- Error Message -->
+              <div v-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                <div class="flex items-start gap-3 text-red-700">
+                  <svg class="w-5 h-5 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                  <div>
+                    <div class="font-semibold text-sm mb-1">Error</div>
+                    <pre class="text-xs font-mono whitespace-pre-wrap">{{ error }}</pre>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="formattedJson" class="space-y-4">
+                <div class="w-full h-96 px-4 py-3 border border-gray-200 rounded-lg bg-white font-mono text-xs overflow-auto">
+                  <pre class="whitespace-pre">{{ formattedJson }}</pre>
+                </div>
+                <button
+                  @click="copyToClipboard(formattedJson)"
+                  class="w-full px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 transition-all font-medium"
+                >
+                  Copy to Clipboard
+                </button>
+              </div>
+              <div v-else-if="!error" class="text-center py-16 text-gray-400 text-sm">
+                Output will appear here
+              </div>
+            </ToolCard>
+
+            <!-- Statistics -->
+            <ToolCard title="Statistics" :default-collapsed="false">
+              <div v-if="stats" class="grid grid-cols-2 gap-3">
+                <div class="bg-gray-50 border border-gray-100 p-4 rounded-lg">
+                  <div class="text-2xl font-bold text-gray-900">{{ stats.characters.toLocaleString() }}</div>
+                  <div class="text-xs text-gray-500 mt-1.5 uppercase tracking-wider font-medium">Characters</div>
+                </div>
+                <div class="bg-gray-50 border border-gray-100 p-4 rounded-lg">
+                  <div class="text-2xl font-bold text-gray-900">{{ stats.lines.toLocaleString() }}</div>
+                  <div class="text-xs text-gray-500 mt-1.5 uppercase tracking-wider font-medium">Lines</div>
+                </div>
+                <div class="bg-gray-50 border border-gray-100 p-4 rounded-lg">
+                  <div class="text-2xl font-bold text-gray-900">{{ stats.items }}</div>
+                  <div class="text-xs text-gray-500 mt-1.5 uppercase tracking-wider font-medium">Items</div>
+                </div>
+                <div class="bg-gray-50 border border-gray-100 p-4 rounded-lg">
+                  <div class="text-2xl font-bold text-gray-900">{{ stats.depth }}</div>
+                  <div class="text-xs text-gray-500 mt-1.5 uppercase tracking-wider font-medium">Max Depth</div>
+                </div>
+              </div>
+              <div v-else class="text-center py-16 text-gray-400 text-sm">
+                Statistics will appear here
+              </div>
+            </ToolCard>
+          </div>
+        </div>
+
+        <!-- Sidebar (Right) -->
+        <div class="xl:col-span-1 space-y-6">
+          <!-- Options -->
+          <ToolCard title="Options" :default-collapsed="false">
             <!-- Indent Size -->
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Indent Size</label>
-              <div class="grid grid-cols-4 gap-2">
+            <div class="mb-5">
+              <label class="block text-sm font-semibold text-gray-700 mb-3">Indent Size</label>
+              <div class="grid grid-cols-2 gap-2">
                 <button
                   v-for="size in [2, 3, 4, 8]"
                   :key="size"
                   @click="indentSize = size"
                   :class="[
-                    'px-4 py-2 rounded-xl text-sm font-medium transition-all',
+                    'px-4 py-2.5 rounded-lg text-sm font-medium transition-all',
                     indentSize === size
                       ? 'bg-gray-900 text-white'
                       : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
                   ]"
                 >
-                  {{ size }} spaces
+                  {{ size }}
                 </button>
               </div>
             </div>
 
             <!-- Sort Keys -->
-            <label class="flex items-center gap-2 mb-6 cursor-pointer">
+            <label class="flex items-center gap-3 cursor-pointer group">
               <input
                 v-model="sortKeys"
                 type="checkbox"
-                class="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
+                class="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-400 focus:ring-offset-0"
               />
-              <span class="text-sm text-gray-700">Sort keys alphabetically</span>
+              <span class="text-sm text-gray-700 group-hover:text-gray-900 font-medium">Sort keys alphabetically</span>
             </label>
+          </ToolCard>
 
-            <!-- Actions -->
-            <div class="grid grid-cols-2 gap-3">
+          <!-- Actions -->
+          <ToolCard title="Actions" :default-collapsed="false">
+            <div class="space-y-3">
               <button
                 @click="format"
                 :disabled="!jsonInput"
-                class="px-4 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full px-4 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Format
+                Format JSON
               </button>
               <button
                 @click="minify"
                 :disabled="!jsonInput"
-                class="px-4 py-3 bg-gray-50 text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-100 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-100 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Minify
+                Minify JSON
               </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Output Section -->
-        <div class="space-y-6">
-          <!-- Error Message -->
-          <div v-if="error" class="tool-container animate-fade-in bg-red-50 border-red-200">
-            <div class="flex items-start gap-3 text-red-700">
-              <span class="text-xl">⚠️</span>
-              <div>
-                <div class="font-semibold mb-1">Error</div>
-                <pre class="text-sm font-mono whitespace-pre-wrap">{{ error }}</pre>
-              </div>
-            </div>
-          </div>
-
-          <!-- Formatted Output -->
-          <div v-if="formattedJson" class="tool-container animate-fade-in">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-xl font-semibold text-gray-900">Output</h2>
               <button
-                @click="copyToClipboard(formattedJson)"
-                class="px-4 py-2 bg-gray-900 text-white text-sm rounded-xl hover:bg-gray-800 transition-all duration-200 font-medium"
+                @click="loadSample"
+                class="w-full px-4 py-3 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-100 transition-all font-medium"
               >
-                Copy
+                Load Sample
               </button>
             </div>
-
-            <div class="w-full h-96 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50/50 font-mono text-sm overflow-auto">
-              <pre class="whitespace-pre">{{ formattedJson }}</pre>
-            </div>
-          </div>
-
-          <!-- Statistics -->
-          <div v-if="stats" class="tool-container stagger-item" style="animation-delay: 0.05s">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Statistics</h3>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <div class="text-2xl font-bold text-gray-900">{{ stats.characters.toLocaleString() }}</div>
-                <div class="text-xs text-gray-500 mt-1 uppercase tracking-wider">Characters</div>
-              </div>
-              <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <div class="text-2xl font-bold text-gray-900">{{ stats.lines.toLocaleString() }}</div>
-                <div class="text-xs text-gray-500 mt-1 uppercase tracking-wider">Lines</div>
-              </div>
-              <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <div class="text-2xl font-bold text-gray-900">{{ stats.items }}</div>
-                <div class="text-xs text-gray-500 mt-1 uppercase tracking-wider">Items</div>
-              </div>
-              <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <div class="text-2xl font-bold text-gray-900">{{ stats.depth }}</div>
-                <div class="text-xs text-gray-500 mt-1 uppercase tracking-wider">Max Depth</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Placeholder -->
-          <div v-if="!formattedJson && !error" class="tool-container text-center py-12">
-            <div class="text-6xl mb-4">{ }</div>
-            <p class="text-gray-500">Enter JSON and click Format or Minify</p>
-          </div>
+          </ToolCard>
         </div>
       </div>
     </main>

@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import ToolHeader from '@/components/ToolHeader.vue'
+import ToolCard from '@/components/ToolCard.vue'
+import ToolIcon from '@/components/ToolIcon.vue'
 
 const category = ref('length')
 const fromValue = ref(1)
@@ -159,128 +161,134 @@ watch(category, () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white">
+  <div class="min-h-screen bg-gray-50">
     <ToolHeader 
       title="Unit Converter" 
       description="Convert between different units of measurement" 
     />
 
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="space-y-8">
-        <!-- Category Selection -->
-        <div class="tool-container animate-fade-in">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">Category</h2>
-          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-            <button
-              v-for="(cat, key) in categories"
-              :key="key"
-              @click="category = key"
-              :class="[
-                'px-4 py-3 rounded-xl text-center transition-all duration-200 flex flex-col items-center gap-2',
-                category === key
-                  ? 'bg-gray-900 text-white shadow-lg'
-                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
-              ]"
-            >
-              <span class="text-2xl">{{ cat.icon }}</span>
-              <span class="font-medium text-xs">{{ cat.name }}</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Converter -->
-        <div class="tool-container stagger-item">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- From -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">From</label>
-              <input
-                v-model="fromValue"
-                type="number"
-                step="any"
-                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all duration-200 bg-gray-50/50 text-lg font-semibold mb-3"
-              />
-              <select
-                v-model="fromUnit"
-                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all duration-200 bg-gray-50/50"
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Main Content (Left) -->
+        <div class="xl:col-span-2 space-y-6">
+          <!-- Category Selection -->
+          <ToolCard title="Category" :collapsible="false" full-width>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+              <button
+                v-for="(cat, key) in categories"
+                :key="key"
+                @click="category = key"
+                :class="[
+                  'px-3 py-3 rounded-lg text-center transition-all flex flex-col items-center gap-2',
+                  category === key
+                    ? 'bg-gray-900 text-white'
+                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
+                ]"
               >
-                <option v-for="(unit, key) in currentUnits" :key="key" :value="key">
-                  {{ unit.name }}
-                </option>
-              </select>
+                <span class="text-xl">{{ cat.icon }}</span>
+                <span class="font-medium text-[10px]">{{ cat.name }}</span>
+              </button>
+            </div>
+          </ToolCard>
+
+          <!-- Converter -->
+          <ToolCard title="Convert" :collapsible="false" full-width>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- From -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-3">From</label>
+                <input
+                  v-model="fromValue"
+                  type="number"
+                  step="any"
+                  class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-100 transition-all bg-white text-lg font-semibold mb-3"
+                />
+                <select
+                  v-model="fromUnit"
+                  class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-100 transition-all bg-white"
+                >
+                  <option v-for="(unit, key) in currentUnits" :key="key" :value="key">
+                    {{ unit.name }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- To -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-3">To</label>
+                <div class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg bg-gray-50 text-lg font-bold mb-3 text-gray-900">
+                  {{ convertedValue.toFixed(6).replace(/\.?0+$/, '') }}
+                </div>
+                <select
+                  v-model="toUnit"
+                  class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-100 transition-all bg-white"
+                >
+                  <option v-for="(unit, key) in currentUnits" :key="key" :value="key">
+                    {{ unit.name }}
+                  </option>
+                </select>
+              </div>
             </div>
 
             <!-- Swap Button -->
-            <div class="flex items-center justify-center md:col-span-2 -my-3">
+            <div class="flex justify-center mt-4">
               <button
                 @click="swapUnits"
-                class="p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
+                class="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all flex items-center gap-2"
                 title="Swap units"
               >
-                <span class="text-2xl">⇄</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+                <span class="text-sm font-medium">Swap</span>
               </button>
             </div>
+          </ToolCard>
 
-            <!-- To -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">To</label>
-              <div class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-100 text-lg font-semibold mb-3 text-gray-900">
-                {{ convertedValue.toFixed(6).replace(/\.?0+$/, '') }}
+          <!-- Result Display -->
+          <ToolCard title="Result" :collapsible="false" full-width>
+            <div class="bg-gray-900 text-white p-6 rounded-lg">
+              <div class="text-center">
+                <div class="text-sm text-gray-400 mb-2">
+                  {{ fromValue }} {{ currentUnits[fromUnit].name }} =
+                </div>
+                <div class="text-4xl font-bold">
+                  {{ convertedValue.toFixed(6).replace(/\.?0+$/, '') }}
+                </div>
+                <div class="text-sm text-gray-400 mt-2">
+                  {{ currentUnits[toUnit].name }}
+                </div>
               </div>
-              <select
-                v-model="toUnit"
-                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all duration-200 bg-gray-50/50"
+            </div>
+          </ToolCard>
+        </div>
+
+        <!-- Sidebar (Right) -->
+        <div class="xl:col-span-1">
+          <!-- Common Conversions -->
+          <ToolCard :title="`Common ${categories[category].name} Conversions`" :default-collapsed="false">
+            <div class="space-y-3">
+              <div
+                v-for="(unit, key) in Object.keys(currentUnits).slice(0, 6)"
+                :key="key"
+                class="bg-gray-50 border border-gray-100 rounded-lg p-3 text-sm"
               >
-                <option v-for="(unit, key) in currentUnits" :key="key" :value="key">
-                  {{ unit.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Result Display -->
-        <div class="tool-container stagger-item" style="animation-delay: 0.05s">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Result</h3>
-          <div class="bg-gray-900 text-white p-6 rounded-xl">
-            <div class="text-center">
-              <div class="text-sm text-gray-400 mb-2">
-                {{ fromValue }} {{ currentUnits[fromUnit].name }} =
-              </div>
-              <div class="text-4xl font-bold">
-                {{ convertedValue.toFixed(6).replace(/\.?0+$/, '') }}
-              </div>
-              <div class="text-sm text-gray-400 mt-2">
-                {{ currentUnits[toUnit].name }}
+                <div class="text-gray-500 text-xs mb-1">
+                  1 {{ currentUnits[fromUnit].name }} =
+                </div>
+                <div class="font-bold text-gray-900 text-base">
+                  {{ 
+                    category === 'temperature' 
+                      ? convertTemperature(1, fromUnit, unit).toFixed(4).replace(/\.?0+$/, '') 
+                      : ((currentUnits[fromUnit].toBase / currentUnits[unit].toBase)).toFixed(6).replace(/\.?0+$/, '')
+                  }}
+                </div>
+                <div class="text-gray-600 text-xs mt-1">
+                  {{ currentUnits[unit].name }}
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Common Conversions -->
-        <div class="tool-container stagger-item" style="animation-delay: 0.1s">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">
-            Common {{ categories[category].name }} Conversions
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div
-              v-for="(unit, key) in Object.keys(currentUnits).slice(0, 6)"
-              :key="key"
-              class="bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm"
-            >
-              <div class="text-gray-600">
-                1 {{ currentUnits[fromUnit].name }} =
-              </div>
-              <div class="font-semibold text-gray-900 text-lg">
-                {{ 
-                  category === 'temperature' 
-                    ? convertTemperature(1, fromUnit, unit).toFixed(4).replace(/\.?0+$/, '') 
-                    : ((currentUnits[fromUnit].toBase / currentUnits[unit].toBase)).toFixed(6).replace(/\.?0+$/, '')
-                }}
-                {{ currentUnits[unit].name }}
-              </div>
-            </div>
-          </div>
+          </ToolCard>
         </div>
       </div>
     </main>

@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import ToolHeader from '@/components/ToolHeader.vue'
+import ToolCard from '@/components/ToolCard.vue'
+import ToolIcon from '@/components/ToolIcon.vue'
 
 const sourceTime = ref(new Date().toISOString().slice(0, 16))
 const sourceTimezone = ref('America/New_York')
@@ -115,35 +117,33 @@ const worldClocks = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white">
+  <div class="min-h-screen bg-gray-50">
     <ToolHeader 
       title="Timezone Converter"
       description="Convert times between timezones" 
     />
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Main Converter -->
-        <div class="lg:col-span-2 space-y-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Main Content (Left) -->
+        <div class="xl:col-span-2 space-y-6">
           <!-- Source Time -->
-          <div class="tool-container animate-fade-in">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">Source Time</h2>
-            
+          <ToolCard title="Source Time" :collapsible="false" full-width>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Date & Time</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Date & Time</label>
                 <input
                   v-model="sourceTime"
                   type="datetime-local"
-                  class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all duration-200 bg-gray-50/50"
+                  class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-100 transition-all bg-white"
                 />
               </div>
               
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Timezone</label>
                 <select
                   v-model="sourceTimezone"
-                  class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all duration-200 bg-gray-50/50"
+                  class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-100 transition-all bg-white"
                 >
                   <option v-for="tz in timezones" :key="tz.value" :value="tz.value">
                     {{ tz.label }}
@@ -154,41 +154,39 @@ const worldClocks = computed(() => {
 
             <button
               @click="setNow"
-              class="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all"
+              class="px-4 py-2 text-sm text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all font-medium"
             >
               Set to Now
             </button>
-          </div>
+          </ToolCard>
 
           <!-- Converted Times -->
-          <div class="tool-container stagger-item">
-            <h2 class="text-xl font-semibold text-gray-900 mb-6">Converted Times</h2>
-            
-            <div v-if="convertedTimes.length === 0" class="text-center py-8 text-gray-500">
-              No favorite timezones selected. Add some from the sidebar.
+          <ToolCard title="Converted Times" :default-collapsed="false">
+            <div v-if="convertedTimes.length === 0" class="text-center py-12 text-gray-400 text-sm">
+              No favorite timezones selected.<br>Add some from the sidebar.
             </div>
 
             <div v-else class="space-y-3">
               <div
                 v-for="converted in convertedTimes"
                 :key="converted.timezone"
-                class="bg-gray-50 border border-gray-200 rounded-xl p-4"
+                class="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:border-gray-200 transition-colors"
               >
                 <div class="flex items-center justify-between">
                   <div class="flex-1">
-                    <div class="font-semibold text-gray-900">{{ converted.label }}</div>
-                    <div class="text-2xl font-mono text-gray-900 mt-2">{{ converted.time }}</div>
+                    <div class="font-semibold text-gray-900 text-sm">{{ converted.label }}</div>
+                    <div class="text-xl font-mono text-gray-900 mt-2">{{ converted.time }}</div>
                   </div>
                   <div class="flex gap-2">
                     <button
                       @click="copyToClipboard(converted.time)"
-                      class="text-sm text-gray-500 hover:text-gray-900 transition-colors"
+                      class="text-xs text-gray-400 hover:text-gray-600 transition-colors px-2 py-1 rounded hover:bg-gray-100 font-medium"
                     >
                       Copy
                     </button>
                     <button
                       @click="removeFromFavorites(converted.timezone)"
-                      class="text-sm text-red-500 hover:text-red-700 transition-colors"
+                      class="text-xs text-red-400 hover:text-red-600 transition-colors px-2 py-1 rounded hover:bg-red-50 font-medium"
                     >
                       Remove
                     </button>
@@ -196,50 +194,46 @@ const worldClocks = computed(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </ToolCard>
 
           <!-- World Clocks -->
-          <div class="tool-container stagger-item" style="animation-delay: 0.05s">
-            <h2 class="text-xl font-semibold text-gray-900 mb-6">World Clocks (Current Time)</h2>
-            
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <ToolCard title="World Clocks (Current Time)" :default-collapsed="false">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
               <div
                 v-for="clock in worldClocks"
                 :key="clock.timezone"
-                class="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center"
+                class="bg-gray-50 border border-gray-100 rounded-lg p-3 text-center hover:border-gray-200 transition-colors"
               >
-                <div class="text-sm text-gray-600 mb-2">{{ clock.label }}</div>
-                <div class="text-xl font-mono font-bold text-gray-900">{{ clock.time }}</div>
+                <div class="text-xs text-gray-500 mb-2 font-medium">{{ clock.label }}</div>
+                <div class="text-lg font-mono font-bold text-gray-900">{{ clock.time }}</div>
               </div>
             </div>
-          </div>
+          </ToolCard>
         </div>
 
-        <!-- Sidebar: All Timezones -->
-        <div class="space-y-8">
-          <div class="tool-container animate-fade-in sticky top-8" style="animation-delay: 0.1s">
-            <h2 class="text-xl font-semibold text-gray-900 mb-6">All Timezones</h2>
-            
-            <div class="space-y-2 max-h-[600px] overflow-y-auto">
+        <!-- Sidebar (Right) -->
+        <div class="xl:col-span-1">
+          <ToolCard title="All Timezones" :default-collapsed="false">
+            <div class="space-y-2 max-h-[600px] overflow-y-auto pr-1">
               <button
                 v-for="tz in timezones"
                 :key="tz.value"
                 @click="addToFavorites(tz.value)"
                 :disabled="favorites.includes(tz.value)"
-                class="w-full px-4 py-3 rounded-xl text-left transition-all duration-200 bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full px-3 py-2.5 rounded-lg text-left transition-all bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <div class="flex items-center justify-between">
                   <div>
-                    <div class="font-medium text-sm">{{ tz.label }}</div>
-                    <div class="text-xs text-gray-500 mt-1">
+                    <div class="font-medium text-xs">{{ tz.label }}</div>
+                    <div class="text-[10px] text-gray-500 mt-0.5">
                       UTC{{ tz.offset >= 0 ? '+' : '' }}{{ tz.offset }}
                     </div>
                   </div>
-                  <span v-if="favorites.includes(tz.value)" class="text-yellow-500">★</span>
+                  <span v-if="favorites.includes(tz.value)" class="text-yellow-500 text-sm">★</span>
                 </div>
               </button>
             </div>
-          </div>
+          </ToolCard>
         </div>
       </div>
     </main>

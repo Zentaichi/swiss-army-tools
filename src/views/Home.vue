@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import ToolIcon from '@/components/ToolIcon.vue'
 
 const router = useRouter()
 
@@ -9,77 +10,77 @@ const tools = ref([
     name: 'Gamepad Tester',
     description: 'Test gamepad buttons, analog sticks, and triggers',
     route: 'gamepad',
-    icon: '🎮',
+    icon: 'gamepad',
     category: 'Device Testers'
   },
   {
     name: 'Keyboard Tester',
     description: 'Test keyboard keys and key combinations',
     route: 'keyboard',
-    icon: '⌨️',
+    icon: 'keyboard',
     category: 'Device Testers'
   },
   {
     name: 'Microphone Tester',
     description: 'Test microphone input and audio levels',
     route: 'microphone',
-    icon: '🎤',
+    icon: 'microphone',
     category: 'Device Testers'
   },
   {
     name: 'Interest Calculator',
     description: 'Calculate simple and compound interest',
     route: 'interest',
-    icon: '💰',
+    icon: 'calculator',
     category: 'Calculators'
   },
   {
     name: 'Unit Converter',
     description: 'Convert between different units of measurement',
     route: 'converter',
-    icon: '📏',
+    icon: 'ruler',
     category: 'Calculators'
   },
   {
     name: 'Color Converter',
     description: 'Convert between HEX, RGB, and HSL color formats',
     route: 'color',
-    icon: '🎨',
+    icon: 'palette',
     category: 'Utilities'
   },
   {
     name: 'Text Tools',
     description: 'Word counter, case converter, and more',
     route: 'text',
-    icon: '📝',
+    icon: 'document',
     category: 'Utilities'
   },
   {
     name: 'JSON Formatter',
     description: 'Format, validate, and minify JSON',
     route: 'json',
-    icon: '{ }',
+    icon: 'code',
     category: 'Utilities'
   },
   {
     name: 'Timezone Converter',
     description: 'Convert times between different timezones',
     route: 'timezone',
-    icon: '🌍',
+    icon: 'globe',
     category: 'Utilities'
   },
   {
     name: 'Date Calculator',
     description: 'Calculate days between dates',
     route: 'date',
-    icon: '📅',
+    icon: 'calendar',
     category: 'Utilities'
   },
   {
     name: 'Regex Tester',
     description: 'Test regular expressions with live matching',
     route: 'regex',
-    icon: '🔍',
+    icon: 'regex',
     category: 'Utilities'
   }
 ])
@@ -104,9 +105,9 @@ const navigateToTool = (route) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white">
+  <div class="min-h-screen bg-gray-50">
     <!-- Minimalistic Header -->
-    <header class="border-b border-gray-100">
+    <header class="bg-white border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="animate-fade-in">
           <h1 class="text-4xl font-bold text-gray-900 tracking-tight">Swiss Army Tools</h1>
@@ -126,7 +127,7 @@ const navigateToTool = (route) => {
             'px-5 py-2.5 rounded-xl font-medium transition-all duration-200',
             activeCategory === category
               ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/10'
-              : 'bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              : 'bg-white text-gray-600 hover:bg-gray-100 hover:text-gray-900 border border-gray-200'
           ]"
         >
           {{ category }}
@@ -141,9 +142,11 @@ const navigateToTool = (route) => {
           v-for="tool in filteredTools"
           :key="tool.route"
           @click="navigateToTool(tool.route)"
-          class="tool-card group stagger-item"
+          class="bg-white border border-gray-200 rounded-xl p-6 cursor-pointer transition-all duration-200 hover:border-gray-300 hover:shadow-lg hover:shadow-gray-900/5 group stagger-item"
         >
-          <div class="text-5xl mb-4 transition-transform duration-300 group-hover:scale-110">{{ tool.icon }}</div>
+          <div class="mb-4 text-gray-600 group-hover:text-gray-900 transition-all duration-300 group-hover:scale-110">
+            <ToolIcon :name="tool.icon" size="xl" />
+          </div>
           <h3 class="text-xl font-semibold text-gray-900 mb-2.5 group-hover:text-gray-600 transition-colors duration-200">
             {{ tool.name }}
           </h3>
@@ -158,7 +161,11 @@ const navigateToTool = (route) => {
       
       <!-- Empty state when filtered -->
       <div v-if="filteredTools.length === 0" class="text-center py-16 animate-fade-in">
-        <div class="text-6xl mb-4">🔍</div>
+        <div class="w-16 h-16 mx-auto mb-4 text-gray-300">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
         <h3 class="text-xl font-semibold text-gray-900 mb-2">No tools found</h3>
         <p class="text-gray-500">Try selecting a different category</p>
       </div>
