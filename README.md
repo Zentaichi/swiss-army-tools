@@ -9,16 +9,20 @@ I wanted an easy-to-access jack-of-all-trades tools so I didn't have to juggle b
 ## Features
 
 ### Currently Implemented
-- **Text Tools** - Transform and analyze text with multiple operations
-- **Keyboard Tester** - Test keyboard inputs and key combinations
-- **Regex Tester** - Test and debug regular expressions with live matching
-- **Date Calculator** - Calculate date differences and add/subtract time periods
-- **Microphone Tester** - Test and visualize microphone input levels
-- **Gamepad Tester** - Test gamepad buttons and analog sticks
+- **Text Tools** - Transform and analyze text with multiple operations (uppercase, lowercase, reverse, etc.)
+- **Keyboard Tester** - Test keyboard inputs and key combinations with visual feedback
+- **Regex Tester** - Test and debug regular expressions with live matching, capture groups, and common patterns
+- **Date Calculator** - Calculate date differences, add/subtract time periods, and view business days
+- **Microphone Tester** - Test and visualize microphone input levels with real-time audio visualization
+- **Gamepad Tester** - Test gamepad buttons and analog sticks with full controller mapping
+- **JSON Formatter** - Format, validate, and minify JSON with statistics and error reporting
+- **Color Converter** - Convert between HEX, RGB, and HSL color formats with live preview
+- **Timezone Converter** - Convert times between timezones with world clocks and favorites
+- **Unit Converter** - Convert between units of length, weight, temperature, volume, area, speed, and time
+- **Interest Calculator** - Calculate compound and simple interest with yearly breakdowns
 
 ### Planned Tools
 - Unix Timestamp Converter
-- JSON Formatter/Validator
 - JWT Debugger
 - URL Encoder/Decoder
 - Base64 Encoder/Decoder
@@ -39,10 +43,6 @@ I wanted an easy-to-access jack-of-all-trades tools so I didn't have to juggle b
 - Markdown Preview
 - SQL Formatter
 - String Case Converter
-- Color Converter
-- Timezone Converter
-- Unit Converter
-- Interest Calculator
 
 ## 🛠️ Built With
 
@@ -61,7 +61,7 @@ I wanted an easy-to-access jack-of-all-trades tools so I didn't have to juggle b
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/swiss-army-tools.git
+git clone https://github.com/Zentaichi/swiss-army-tools.git
 
 # Navigate to project directory
 cd swiss-army-tools
