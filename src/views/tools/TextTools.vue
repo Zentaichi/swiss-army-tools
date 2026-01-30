@@ -1,8 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import ToolHeader from '@/components/ToolHeader.vue'
 
-const router = useRouter()
 const text = ref('')
 
 // Text statistics
@@ -90,31 +89,14 @@ const clearText = () => {
 }
 
 const showCopyNotification = ref(false)
-
-const goBack = () => {
-  router.push('/')
-}
 </script>
 
 <template>
   <div class="min-h-screen bg-white">
-    <!-- Minimalistic Header -->
-    <header class="border-b border-gray-100">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="flex items-center gap-6 animate-fade-in">
-          <button
-            @click="goBack"
-            class="text-gray-400 hover:text-gray-900 transition-colors duration-200 text-sm font-medium"
-          >
-            ← Back
-          </button>
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Text Tools</h1>
-            <p class="text-gray-500 mt-1">Transform and analyze your text</p>
-          </div>
-        </div>
-      </div>
-    </header>
+    <ToolHeader 
+      title="Text Tools" 
+      description="Transform and analyze your text" 
+    />
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">

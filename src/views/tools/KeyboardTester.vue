@@ -1,8 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import ToolHeader from '@/components/ToolHeader.vue'
 
-const router = useRouter()
 const pressedKeys = ref(new Set())
 const keyHistory = ref([])
 const maxHistory = 50
@@ -188,10 +187,6 @@ const clearHistory = () => {
   keyHistory.value = []
 }
 
-const goBack = () => {
-  router.push('/')
-}
-
 onMounted(() => {
   window.addEventListener('keydown', handleKeyDown)
   window.addEventListener('keyup', handleKeyUp)
@@ -205,23 +200,10 @@ onUnmounted(() => {
 
 <template>
   <div class="min-h-screen bg-white">
-    <!-- Minimalistic Header -->
-    <header class="border-b border-gray-100">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="flex items-center gap-6 animate-fade-in">
-          <button
-            @click="goBack"
-            class="text-gray-400 hover:text-gray-900 transition-colors duration-200 text-sm font-medium"
-          >
-            ← Back
-          </button>
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Keyboard Tester</h1>
-            <p class="text-gray-500 mt-1">Press any key to test your keyboard</p>
-          </div>
-        </div>
-      </div>
-    </header>
+    <ToolHeader 
+      title="Keyboard Tester" 
+      description="Press any key to test your keyboard" 
+    />
 
     <main class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">

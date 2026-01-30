@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
+import ToolHeader from '@/components/ToolHeader.vue'
 
 const gamepad = ref(null)
 const connected = ref(false)
@@ -117,10 +115,6 @@ onUnmounted(() => {
   stopPolling()
 })
 
-const goBack = () => {
-  router.push('/')
-}
-
 const getStickPosition = (xAxis, yAxis) => {
   const x = ((xAxis + 1) / 2) * 100
   const y = ((yAxis + 1) / 2) * 100
@@ -129,24 +123,11 @@ const getStickPosition = (xAxis, yAxis) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex items-center gap-4">
-          <button
-            @click="goBack"
-            class="text-gray-600 hover:text-gray-900 transition-colors duration-200"
-          >
-            ← Back
-          </button>
-          <div>
-            <h1 class="text-2xl font-bold text-gray-900">Gamepad Tester</h1>
-            <p class="text-sm text-gray-600">Test your gamepad buttons and analog sticks</p>
-          </div>
-        </div>
-      </div>
-    </header>
+  <div class="min-h-screen bg-white">
+    <ToolHeader 
+      title="Gamepad Tester" 
+      description="Test your gamepad buttons and analog sticks" 
+    />
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Connection Status -->
